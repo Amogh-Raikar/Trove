@@ -12,7 +12,7 @@
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,#071025 0%, #021026 100%);
       color:#e6eef8;padding:28px;display:flex;justify-content:center;font-size:16px;line-height:1.5;}
-    .wrap{width:100%;max-width:var(--maxw);}
+    .wrap{width:100%;max-width:var(--maxw);}    
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px}
     .brand{display:flex;align-items:center;gap:12px}
     .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8b5cf6);
@@ -21,32 +21,34 @@
     .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     button{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:inherit;
       padding:8px 12px;border-radius:10px;cursor:pointer;}
-    button.primary{background:linear-gradient(90deg,var(--accent),#7c3aed);border:0;}
+    button.primary{background:linear-gradient(90deg,var(--accent),#7c3aed);border:0}
     input[type="search"]{background:transparent;border:1px solid rgba(255,255,255,0.08);
-      padding:8px 10px;border-radius:8px;color:inherit;}
-    main{display:grid;grid-template-columns:1fr 360px;gap:22px;align-items:start;}
+      padding:8px 10px;border-radius:8px;color:inherit;min-width:160px}
+    main{display:grid;grid-template-columns:1fr 420px;gap:22px;align-items:start;}
     .feed{display:flex;flex-direction:column;gap:16px}
-    .post{background:var(--card);padding:24px;border-radius:12px;
-      box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.05);}
-    .post h2{margin:0 0 8px 0;font-size:1.6em;}
+    .post{background:var(--card);padding:28px;border-radius:12px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.05)}
+    .post h2{margin:0 0 8px 0;font-size:1.8em}
     .meta{color:var(--muted);font-size:13px;margin-bottom:12px}
     .post img{max-width:100%;border-radius:8px;margin:10px 0}
     .sidebar{position:sticky;top:24px}
     .card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)}
     label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
     textarea, input, .file, .editor-area{width:100%;padding:10px;border-radius:8px;
-      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:inherit;}
-    textarea{min-height:200px;resize:vertical}
+      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:inherit}
+    textarea{min-height:220px;resize:vertical}
     .hidden{display:none}
-    .toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+    .toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
     .toolbar button{padding:6px 10px;font-size:14px;border-radius:6px}
-    .editor-area{min-height:300px;overflow-y:auto;}
-    .editor-area:focus{outline:1px solid var(--accent);}
+    .editor-area{min-height:420px;max-height:70vh;overflow-y:auto;padding:14px}
+    .editor-area:focus{outline:1px solid var(--accent)}
     .tag{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.08);
-      font-size:13px;margin:4px 6px 0 0;}
-    footer{margin-top:28px;color:var(--muted);font-size:14px;text-align:center;}
+      font-size:13px;margin:4px 6px 0 0}
+    footer{margin-top:28px;color:var(--muted);font-size:14px;text-align:center}
     .post-controls{display:flex;gap:8px;margin-top:10px}
-    @media (max-width:900px){main{grid-template-columns:1fr;}}
+    .image-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .image-strip img{width:100px;height:70px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.04)}
+    @media (max-width:1000px){main{grid-template-columns:1fr;}.editor-area{min-height:300px}}
   </style>
 </head>
 <body>
@@ -56,7 +58,7 @@
         <div class="logo">PB</div>
         <div>
           <h1>Private Blog</h1>
-          <div style="color:var(--muted);font-size:13px">Advanced editor version</div>
+          <div style="color:var(--muted);font-size:13px">Advanced editor — your posts, your control</div>
         </div>
       </div>
 
@@ -64,6 +66,8 @@
         <input id="search" type="search" placeholder="Search posts...">
         <button id="loginBtn">Owner login</button>
         <button id="newPostBtn" class="primary hidden">New Post</button>
+        <button id="exportBtn">Export</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden">
       </div>
     </header>
 
@@ -78,151 +82,256 @@
 
           <div id="editorPanel" class="hidden" style="margin-top:10px">
             <label>Title</label>
-            <input id="title">
-            <label style="margin-top:8px">Tags</label>
-            <input id="tags">
+            <input id="title" placeholder="Post title">
+            <label style="margin-top:8px">Tags (comma separated)</label>
+            <input id="tags" placeholder="tag1, tag2">
+
+            <div style="margin-top:8px" class="small">Formatting toolbar</div>
             <div class="toolbar" id="toolbar">
-              <button onclick="execCmd('bold')"><b>B</b></button>
-              <button onclick="execCmd('italic')"><i>I</i></button>
-              <button onclick="execCmd('underline')"><u>U</u></button>
-              <button onclick="execCmd('insertOrderedList')">OL</button>
-              <button onclick="execCmd('insertUnorderedList')">UL</button>
-              <button onclick="execCmd('createLink')">Link</button>
-              <button onclick="execCmd('formatBlock','H2')">H2</button>
-              <button onclick="execCmd('formatBlock','H3')">H3</button>
-              <button id="addImgBtn">Image</button>
-              <input type="file" id="imgInput" accept="image/*" class="hidden">
+              <button onclick="execCmd('bold')" title="Bold"><b>B</b></button>
+              <button onclick="execCmd('italic')" title="Italic"><i>I</i></button>
+              <button onclick="execCmd('underline')" title="Underline"><u>U</u></button>
+              <button onclick="execCmd('formatBlock','H2')" title="Heading 2">H2</button>
+              <button onclick="execCmd('formatBlock','H3')" title="Heading 3">H3</button>
+              <button onclick="execCmd('insertOrderedList')" title="Numbered list">OL</button>
+              <button onclick="execCmd('insertUnorderedList')" title="Bulleted list">UL</button>
+              <button onclick="execCmd('createLink')" title="Insert link">Link</button>
+              <button id="addImgBtn" title="Insert image">Image</button>
+              <button id="quoteBtn" title="Blockquote">❝</button>
+              <input type="file" id="imgInput" accept="image/*" class="hidden" multiple>
             </div>
+
             <div id="editor" class="editor-area" contenteditable="true" placeholder="Write your post..."></div>
-            <div style="margin-top:10px;display:flex;gap:8px;">
-              <button id="saveBtn" class="primary">Save</button>
+
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
+              <button id="saveBtn" class="primary">Publish / Save</button>
               <button id="cancelBtn">Cancel</button>
+              <button id="attachImgsBtn">Attach images</button>
+              <input id="attachInput" type="file" accept="image/*" class="hidden" multiple>
             </div>
+
+            <div class="image-strip" id="attachedPreview" aria-hidden="true"></div>
+
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="exportJSON">Download JSON</button>
+              <button id="importJSON">Import JSON</button>
+              <button id="clearAll">Clear all posts</button>
+            </div>
+
+            <div style="margin-top:10px;color:var(--muted);font-size:13px">Tip: drag images into the editor or use Attach images. Images are embedded as data URIs.</div>
           </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div><strong>About</strong></div>
+          <div style="margin-top:8px;color:var(--muted);font-size:13px">Posts are stored locally in your browser. Export them for backup. Change the password in the file if you want a different one.</div>
         </div>
       </aside>
     </main>
 
-    <footer>Posts stored in browser. Export feature coming soon.</footer>
+    <footer>Local-only blog — public can read, only you (with password) can write.</footer>
   </div>
 
   <script>
-    const OWNER_PASSWORD = "amogh_secret"; // change this!
+    // === CONFIG ===
+    const OWNER_PASSWORD = 'amogh123'; // <-- your chosen password
+    // storage key
+    const STORAGE_KEY = 'pb_advanced_posts_v1';
 
-    let posts = JSON.parse(localStorage.getItem("pb_posts2")||"[]");
+    // state
+    let posts = [];
     let isOwner = false;
-    let editId = null;
-    const feed=document.getElementById("feed"),
-          loginBtn=document.getElementById("loginBtn"),
-          ownerStatus=document.getElementById("ownerStatus"),
-          newBtn=document.getElementById("newPostBtn"),
-          editorPanel=document.getElementById("editorPanel"),
-          titleIn=document.getElementById("title"),
-          tagsIn=document.getElementById("tags"),
-          editor=document.getElementById("editor"),
-          search=document.getElementById("search");
+    let editingId = null;
+    let attachedImages = []; // images attached to current post (data URLs)
 
-    // Render
-    function render(){
-      feed.innerHTML="";
-      const q=search.value.toLowerCase();
-      posts.filter(p=>(p.title+p.content).toLowerCase().includes(q))
-        .forEach(p=>{
-          const d=document.createElement("div");
-          d.className="post";
-          d.innerHTML=`
-            <h2>${p.title}</h2>
-            <div class="meta">${new Date(p.date).toLocaleString()}</div>
-            <div>${p.content}</div>
-            ${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join("")}
-          `;
-          if(isOwner){
-            const c=document.createElement("div");
-            c.className="post-controls";
-            const e=document.createElement("button");
-            e.textContent="Edit"; e.onclick=()=>openEditor(p.id);
-            const del=document.createElement("button");
-            del.textContent="Delete"; del.onclick=()=>{if(confirm("Delete?")){posts=posts.filter(x=>x.id!==p.id);save();render();}};
-            c.append(e,del); d.append(c);
-          }
-          feed.append(d);
-        });
-      if(!posts.length) feed.innerHTML="<div class='post'>No posts yet.</div>";
+    // elements
+    const feedEl = document.getElementById('feed');
+    const loginBtn = document.getElementById('loginBtn');
+    const newPostBtn = document.getElementById('newPostBtn');
+    const editorPanel = document.getElementById('editorPanel');
+    const titleIn = document.getElementById('title');
+    const tagsIn = document.getElementById('tags');
+    const editor = document.getElementById('editor');
+    const imgInput = document.getElementById('imgInput');
+    const addImgBtn = document.getElementById('addImgBtn');
+    const attachImgsBtn = document.getElementById('attachImgsBtn');
+    const attachInput = document.getElementById('attachInput');
+    const attachedPreview = document.getElementById('attachedPreview');
+    const ownerStatus = document.getElementById('ownerStatus');
+    const searchInput = document.getElementById('search');
+    const exportBtn = document.getElementById('exportBtn');
+    const exportJSONBtn = document.getElementById('exportJSON');
+    const importJSONBtn = document.getElementById('importJSON');
+    const importFile = document.getElementById('importFile');
+    const clearAllBtn = document.getElementById('clearAll');
+
+    // utils
+    function uid(){ return 'p_' + Math.random().toString(36).slice(2,10); }
+    function nowISO(){ return new Date().toISOString(); }
+
+    // storage
+    function load(){
+      try{ posts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }catch(e){ posts = []; }
+    }
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); }
+
+    // render posts
+    function renderPosts(filter=''){
+      feedEl.innerHTML = '';
+      const q = (filter||'').toLowerCase();
+      const list = posts.filter(p => ((p.title||'') + ' ' + (p.content||'') + ' ' + (p.tags||'')).toLowerCase().includes(q));
+      if(list.length === 0){ feedEl.innerHTML = '<div class="post"><div style="color:var(--muted)">No posts yet.</div></div>'; return; }
+
+      list.forEach(p => {
+        const el = document.createElement('article');
+        el.className = 'post';
+        el.innerHTML = `
+          <h2>${escapeHtml(p.title)}</h2>
+          <div class="meta">${formatDate(p.createdAt)}${p.editedAt? ' • edited '+formatDate(p.editedAt): ''} • ${p.author||'Author'}</div>
+          <div class="post-content">${p.content}</div>
+          <div style="margin-top:12px">${renderTags(p.tags)}</div>
+        `;
+        // images strip if attached
+        if(p.images && p.images.length){
+          const strip = document.createElement('div'); strip.className = 'image-strip';
+          p.images.forEach(src=>{ const i=document.createElement('img'); i.src=src; strip.appendChild(i); });
+          el.appendChild(strip);
+        }
+        if(isOwner){
+          const ctr = document.createElement('div'); ctr.className = 'post-controls';
+          const editBtn = document.createElement('button'); editBtn.textContent = 'Edit'; editBtn.onclick = ()=> openEditor(p.id);
+          const delBtn = document.createElement('button'); delBtn.textContent = 'Delete'; delBtn.onclick = ()=> { if(confirm('Delete this post?')){ posts = posts.filter(x=>x.id!==p.id); save(); renderPosts(searchInput.value); } };
+          ctr.appendChild(editBtn); ctr.appendChild(delBtn); el.appendChild(ctr);
+        }
+        feedEl.appendChild(el);
+      });
     }
 
-    // Save/load
-    function save(){ localStorage.setItem("pb_posts2", JSON.stringify(posts)); }
+    function renderTags(tags){ if(!tags) return ''; return tags.split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join(''); }
+    function formatDate(iso){ try{ return new Date(iso).toLocaleString(); }catch(e){ return iso; } }
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"]+/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]) }); }
 
-    // Editor
+    // editor open/close
     function openEditor(id=null){
-      editId=id;
+      editingId = id;
+      attachedImages = [];
+      attachedPreview.innerHTML = '';
       if(id){
-        const p=posts.find(x=>x.id===id);
-        titleIn.value=p.title; tagsIn.value=p.tags.join(", ");
-        editor.innerHTML=p.content;
-      }else{
-        titleIn.value=""; tagsIn.value=""; editor.innerHTML="";
+        const p = posts.find(x=>x.id===id); if(!p) return;
+        titleIn.value = p.title; tagsIn.value = p.tags || ''; editor.innerHTML = p.content || '';
+        if(p.images && p.images.length){ p.images.forEach(src=> addAttachedPreview(src)); attachedImages = p.images.slice(); }
+      }else{ titleIn.value=''; tagsIn.value=''; editor.innerHTML=''; }
+      editorPanel.classList.remove('hidden'); newPostBtn.classList.add('hidden');
+      setTimeout(()=> editor.focus(), 50);
+    }
+    function closeEditor(){ editorPanel.classList.add('hidden'); newPostBtn.classList.toggle('hidden', !isOwner); editingId = null; attachedImages = []; attachedPreview.innerHTML=''; }
+
+    // toolbar commands
+    function execCmd(cmd, val=null){
+      if(cmd === 'createLink'){
+        val = prompt('Enter destination URL (include https://):', 'https://');
+        if(!val) return;
       }
-      editorPanel.classList.remove("hidden");
-      newBtn.classList.add("hidden");
-    }
-    function closeEditor(){editorPanel.classList.add("hidden");newBtn.classList.remove("hidden");}
-
-    // Commands
-    function execCmd(cmd,val=null){
-      if(cmd==="createLink"){val=prompt("Enter URL:","https://");}
-      document.execCommand(cmd,false,val);
-    }
-    window.execCmd=execCmd;
-
-    // Image embed
-    document.getElementById("addImgBtn").onclick=()=>document.getElementById("imgInput").click();
-    document.getElementById("imgInput").onchange=e=>{
-      const f=e.target.files[0]; if(!f)return;
-      const r=new FileReader();
-      r.onload=()=>{document.execCommand("insertImage",false,r.result);}
-      r.readAsDataURL(f);
-    }
-
-    // Save post
-    document.getElementById("saveBtn").onclick=()=>{
-      const t=titleIn.value.trim()||"Untitled";
-      const tags=tagsIn.value.split(",").map(s=>s.trim()).filter(Boolean);
-      const html=editor.innerHTML;
-      if(editId){
-        const p=posts.find(x=>x.id===editId);
-        p.title=t;p.tags=tags;p.content=html;p.date=new Date().toISOString();
-      }else{
-        posts.unshift({id:crypto.randomUUID(),title:t,tags,content:html,date:new Date().toISOString()});
+      if(cmd === 'formatBlock'){
+        document.execCommand(cmd, false, val);
+        return;
       }
-      save();render();closeEditor();
-    };
-    document.getElementById("cancelBtn").onclick=closeEditor;
-
-    // Owner
-    loginBtn.onclick=()=>{
-      if(isOwner){isOwner=false;updateOwnerUI();return;}
-      const p=prompt("Enter owner password:");
-      if(p===OWNER_PASSWORD){isOwner=true;updateOwnerUI();alert("Unlocked!");}
-      else alert("Wrong password");
-    }
-    function updateOwnerUI(){
-      ownerStatus.textContent=isOwner?"Unlocked":"Locked";
-      newBtn.classList.toggle("hidden",!isOwner);
-      render();
+      document.execCommand(cmd, false, val);
     }
 
-    newBtn.onclick=()=>openEditor();
-    search.oninput=()=>render();
+    // image insertion (inline)
+    addImgBtn.addEventListener('click', ()=> imgInput.click());
+    imgInput.addEventListener('change', e=>{
+      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ document.execCommand('insertImage', false, r.result); }; r.readAsDataURL(f);
+      imgInput.value = '';
+    });
 
-    if(!posts.length){
-      posts.push({id:crypto.randomUUID(),title:"Welcome Post",
-      content:"<p>This is your private blog. Use <b>Owner login</b> to add posts with rich formatting.</p>",
-      tags:["welcome"],date:new Date().toISOString()});
-      save();
+    // attach images (for gallery)
+    attachImgsBtn.addEventListener('click', ()=> attachInput.click());
+    attachInput.addEventListener('change', e=>{
+      const files = Array.from(e.target.files || []);
+      files.forEach(f=>{ const r=new FileReader(); r.onload=()=>{ attachedImages.push(r.result); addAttachedPreview(r.result); }; r.readAsDataURL(f); });
+      attachInput.value = '';
+    });
+
+    function addAttachedPreview(dataUrl){
+      const img = document.createElement('img'); img.src = dataUrl; attachedPreview.appendChild(img);
     }
 
-    render();
+    // drag & drop images into editor
+    editor.addEventListener('dragover', e=>{ e.preventDefault(); editor.style.opacity = 0.9; });
+    editor.addEventListener('dragleave', e=>{ editor.style.opacity = 1; });
+    editor.addEventListener('drop', e=>{
+      e.preventDefault(); editor.style.opacity = 1;
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if(f && f.type.startsWith('image/')){
+        const r = new FileReader(); r.onload = ()=>{ document.execCommand('insertImage', false, r.result); }; r.readAsDataURL(f);
+      }
+    });
+
+    // save post
+    document.getElementById('saveBtn').addEventListener('click', ()=>{
+      const title = titleIn.value.trim() || 'Untitled';
+      const tags = tagsIn.value.trim();
+      const content = editor.innerHTML.trim();
+      if(!content && !confirm('Publish empty content?')) return;
+      if(editingId){
+        const p = posts.find(x=>x.id===editingId); if(!p) return;
+        p.title = title; p.tags = tags; p.content = content; p.images = attachedImages.slice(); p.editedAt = nowISO();
+      } else {
+        const newP = { id: uid(), title, tags, content, images: attachedImages.slice(), createdAt: nowISO(), author: 'Owner' };
+        posts.unshift(newP);
+      }
+      save(); renderPosts(searchInput.value); closeEditor();
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', ()=>{ if(confirm('Discard changes?')) closeEditor(); });
+
+    // owner login
+    loginBtn.addEventListener('click', ()=>{
+      if(isOwner){ isOwner = false; updateOwnerUI(); alert('Logged out.'); return; }
+      const p = prompt('Enter owner password to unlock editing:');
+      if(p === OWNER_PASSWORD){ isOwner = true; updateOwnerUI(); alert('Owner mode unlocked.'); }
+      else alert('Incorrect password.');
+    });
+
+    function updateOwnerUI(){ ownerStatus.textContent = isOwner? 'Unlocked' : 'Locked'; newPostBtn.classList.toggle('hidden', !isOwner); renderPosts(searchInput.value); loginBtn.textContent = isOwner? 'Logout' : 'Owner login'; }
+
+    newPostBtn.addEventListener('click', ()=> openEditor(null));
+
+    // search
+    searchInput.addEventListener('input', e=> renderPosts(e.target.value));
+
+    // export/import
+    exportBtn.addEventListener('click', ()=> downloadPosts());
+    exportJSONBtn.addEventListener('click', ()=> downloadPosts());
+    importJSONBtn.addEventListener('click', ()=> importFile.click());
+    importFile.addEventListener('change', e=>{
+      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{
+        try{
+          const data = JSON.parse(r.result);
+          if(!Array.isArray(data)) throw 'Invalid file';
+          if(confirm('Append imported posts? OK=append, Cancel=replace')){ posts = posts.concat(data.map(sanitize)); }
+          else { posts = data.map(sanitize); }
+          save(); renderPosts(searchInput.value);
+        }catch(err){ alert('Import failed: '+err); }
+      }; r.readAsText(f);
+      importFile.value = '';
+    });
+
+    function sanitize(o){ return { id: o.id||uid(), title: o.title||'Untitled', tags: o.tags||'', content: o.content||'', images: o.images||[], createdAt: o.createdAt||nowISO(), editedAt: o.editedAt||null, author: o.author||'Imported' }; }
+
+    function downloadPosts(){ const data = JSON.stringify(posts, null, 2); const blob = new Blob([data], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'private-blog-posts.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+
+    // clear all
+    clearAllBtn.addEventListener('click', ()=>{ if(confirm('Clear ALL posts? This cannot be undone.')){ posts=[]; save(); renderPosts(); } });
+
+    // helper: seed sample
+    function seed(){ if(posts.length) return; posts = [{ id: uid(), title: 'Welcome to your Private Blog', tags: 'welcome,setup', content: '<p>This is a sample post. Unlock owner mode to add posts with images and rich formatting.</p>', images: [], createdAt: nowISO(), author: 'Owner' }]; save(); }
+
+    // init
+    (function init(){ load(); seed(); renderPosts(); })();
+
   </script>
 </body>
 </html>
