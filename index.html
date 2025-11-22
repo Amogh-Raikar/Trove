@@ -1,337 +1,226 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Private Blog - Advanced Editor</title>
-  <style>
-    :root {
-      --bg:#0f1724; --card:#0b1220; --muted:#9aa6bd; --accent:#06b6d4; --maxw:1200px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(180deg,#071025 0%, #021026 100%);
-      color:#e6eef8;padding:28px;display:flex;justify-content:center;font-size:16px;line-height:1.5;}
-    .wrap{width:100%;max-width:var(--maxw);}    
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8b5cf6);
-      display:flex;align-items:center;justify-content:center;font-weight:700}
-    .brand h1{margin:0;font-size:20px}
-    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    button{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:inherit;
-      padding:8px 12px;border-radius:10px;cursor:pointer;}
-    button.primary{background:linear-gradient(90deg,var(--accent),#7c3aed);border:0}
-    input[type="search"]{background:transparent;border:1px solid rgba(255,255,255,0.08);
-      padding:8px 10px;border-radius:8px;color:inherit;min-width:160px}
-    main{display:grid;grid-template-columns:1fr 420px;gap:22px;align-items:start;}
-    .feed{display:flex;flex-direction:column;gap:16px}
-    .post{background:var(--card);padding:28px;border-radius:12px;
-      box-shadow:0 6px 18px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.05)}
-    .post h2{margin:0 0 8px 0;font-size:1.8em}
-    .meta{color:var(--muted);font-size:13px;margin-bottom:12px}
-    .post img{max-width:100%;border-radius:8px;margin:10px 0}
-    .sidebar{position:sticky;top:24px}
-    .card{background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    textarea, input, .file, .editor-area{width:100%;padding:10px;border-radius:8px;
-      border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:inherit}
-    textarea{min-height:220px;resize:vertical}
-    .hidden{display:none}
-    .toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-    .toolbar button{padding:6px 10px;font-size:14px;border-radius:6px}
-    .editor-area{min-height:420px;max-height:70vh;overflow-y:auto;padding:14px}
-    .editor-area:focus{outline:1px solid var(--accent)}
-    .tag{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.08);
-      font-size:13px;margin:4px 6px 0 0}
-    footer{margin-top:28px;color:var(--muted);font-size:14px;text-align:center}
-    .post-controls{display:flex;gap:8px;margin-top:10px}
-    .image-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .image-strip img{width:100px;height:70px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.04)}
-    @media (max-width:1000px){main{grid-template-columns:1fr;}.editor-area{min-height:300px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Programs</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: #222;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #333;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 16px;
+            cursor: pointer;
+            background: #444;
+            border: none;
+            color: white;
+        }
+
+        .sidebar button:hover {
+            background: #555;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #00ff9c;
+            padding: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 16px;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+        }
+
+        .controls button {
+            margin-right: 10px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        function showProgram(id) {
+            const programs = document.querySelectorAll(".program");
+            programs.forEach(p => p.style.display = "none");
+
+            document.getElementById(id).style.display = "block";
+        }
+
+        function copyCode(codeId) {
+            const text = document.getElementById(codeId).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Code copied!");
+        }
+
+        function downloadCode(codeId, fileName) {
+            const text = document.getElementById(codeId).innerText;
+            const blob = new Blob([text], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+        }
+    </script>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">PB</div>
-        <div>
-          <h1>Private Blog</h1>
-          <div style="color:var(--muted);font-size:13px">Advanced editor — your posts, your control</div>
-        </div>
-      </div>
 
-      <div class="controls">
-        <input id="search" type="search" placeholder="Search posts...">
-        <button id="loginBtn">Owner login</button>
-        <button id="newPostBtn" class="primary hidden">New Post</button>
-        <button id="exportBtn">Export</button>
-        <input id="importFile" type="file" accept="application/json" class="hidden">
-      </div>
-    </header>
+<header>C++ PROGRAMS</header>
 
-    <main>
-      <section class="feed" id="feed"></section>
+<div class="container">
 
-      <aside class="sidebar">
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <strong>Owner Tools</strong><div id="ownerStatus" style="font-size:13px;color:var(--muted)">Locked</div>
-          </div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Programs</h2>
 
-          <div id="editorPanel" class="hidden" style="margin-top:10px">
-            <label>Title</label>
-            <input id="title" placeholder="Post title">
-            <label style="margin-top:8px">Tags (comma separated)</label>
-            <input id="tags" placeholder="tag1, tag2">
+        <button onclick="showProgram('p1')">Program 1</button>
+        <button onclick="showProgram('p2')">Program 2</button>
+        <button onclick="showProgram('p3')">Program 3</button>
+        <button onclick="showProgram('p4')">Program 4</button>
+        <button onclick="showProgram('p5')">Program 5</button>
+        <button onclick="showProgram('p6')">Program 6</button>
+        <button onclick="showProgram('p7')">Program 7</button>
+        <button onclick="showProgram('p8')">Program 8</button>
+        <button onclick="showProgram('p9')">Program 9</button>
+        <button onclick="showProgram('p10')">Program 10</button>
+    </div>
 
-            <div style="margin-top:8px" class="small">Formatting toolbar</div>
-            <div class="toolbar" id="toolbar">
-              <button onclick="execCmd('bold')" title="Bold"><b>B</b></button>
-              <button onclick="execCmd('italic')" title="Italic"><i>I</i></button>
-              <button onclick="execCmd('underline')" title="Underline"><u>U</u></button>
-              <button onclick="execCmd('formatBlock','H2')" title="Heading 2">H2</button>
-              <button onclick="execCmd('formatBlock','H3')" title="Heading 3">H3</button>
-              <button onclick="execCmd('insertOrderedList')" title="Numbered list">OL</button>
-              <button onclick="execCmd('insertUnorderedList')" title="Bulleted list">UL</button>
-              <button onclick="execCmd('createLink')" title="Insert link">Link</button>
-              <button id="addImgBtn" title="Insert image">Image</button>
-              <button id="quoteBtn" title="Blockquote">❝</button>
-              <input type="file" id="imgInput" accept="image/*" class="hidden" multiple>
+    <!-- MAIN CONTENT -->
+    <div class="content">
+
+        <!-- ================= PROGRAM 1 ================= -->
+        <div id="p1" class="program">
+            <h2>Program 1</h2>
+
+            <div class="controls">
+                <button onclick="copyCode('code-1')">Copy</button>
+                <button onclick="downloadCode('code-1', 'program1.cpp')">Download</button>
             </div>
 
-            <div id="editor" class="editor-area" contenteditable="true" placeholder="Write your post..."></div>
+            <pre><code id="code-1">
+#include <iostream>
+using namespace std;
 
-            <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
-              <button id="saveBtn" class="primary">Publish / Save</button>
-              <button id="cancelBtn">Cancel</button>
-              <button id="attachImgsBtn">Attach images</button>
-              <input id="attachInput" type="file" accept="image/*" class="hidden" multiple>
-            </div>
+class BINARY {
+private:
+    string num;
 
-            <div class="image-strip" id="attachedPreview" aria-hidden="true"></div>
-
-            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
-              <button id="exportJSON">Download JSON</button>
-              <button id="importJSON">Import JSON</button>
-              <button id="clearAll">Clear all posts</button>
-            </div>
-
-            <div style="margin-top:10px;color:var(--muted);font-size:13px">Tip: drag images into the editor or use Attach images. Images are embedded as data URIs.</div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:12px">
-          <div><strong>About</strong></div>
-          <div style="margin-top:8px;color:var(--muted);font-size:13px">Posts are stored locally in your browser. Export them for backup. Change the password in the file if you want a different one.</div>
-        </div>
-      </aside>
-    </main>
-
-    <footer>Local-only blog — public can read, only you (with password) can write.</footer>
-  </div>
-
-  <script>
-    // === CONFIG ===
-    const OWNER_PASSWORD = 'amogh123'; // <-- your chosen password
-    // storage key
-    const STORAGE_KEY = 'pb_advanced_posts_v1';
-
-    // state
-    let posts = [];
-    let isOwner = false;
-    let editingId = null;
-    let attachedImages = []; // images attached to current post (data URLs)
-
-    // elements
-    const feedEl = document.getElementById('feed');
-    const loginBtn = document.getElementById('loginBtn');
-    const newPostBtn = document.getElementById('newPostBtn');
-    const editorPanel = document.getElementById('editorPanel');
-    const titleIn = document.getElementById('title');
-    const tagsIn = document.getElementById('tags');
-    const editor = document.getElementById('editor');
-    const imgInput = document.getElementById('imgInput');
-    const addImgBtn = document.getElementById('addImgBtn');
-    const attachImgsBtn = document.getElementById('attachImgsBtn');
-    const attachInput = document.getElementById('attachInput');
-    const attachedPreview = document.getElementById('attachedPreview');
-    const ownerStatus = document.getElementById('ownerStatus');
-    const searchInput = document.getElementById('search');
-    const exportBtn = document.getElementById('exportBtn');
-    const exportJSONBtn = document.getElementById('exportJSON');
-    const importJSONBtn = document.getElementById('importJSON');
-    const importFile = document.getElementById('importFile');
-    const clearAllBtn = document.getElementById('clearAll');
-
-    // utils
-    function uid(){ return 'p_' + Math.random().toString(36).slice(2,10); }
-    function nowISO(){ return new Date().toISOString(); }
-
-    // storage
-    function load(){
-      try{ posts = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }catch(e){ posts = []; }
+public:
+    void read() {
+        cout << "Enter a binary number: ";
+        cin >> num;
     }
-    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(posts)); }
 
-    // render posts
-    function renderPosts(filter=''){
-      feedEl.innerHTML = '';
-      const q = (filter||'').toLowerCase();
-      const list = posts.filter(p => ((p.title||'') + ' ' + (p.content||'') + ' ' + (p.tags||'')).toLowerCase().includes(q));
-      if(list.length === 0){ feedEl.innerHTML = '<div class="post"><div style="color:var(--muted)">No posts yet.</div></div>'; return; }
-
-      list.forEach(p => {
-        const el = document.createElement('article');
-        el.className = 'post';
-        el.innerHTML = `
-          <h2>${escapeHtml(p.title)}</h2>
-          <div class="meta">${formatDate(p.createdAt)}${p.editedAt? ' • edited '+formatDate(p.editedAt): ''} • ${p.author||'Author'}</div>
-          <div class="post-content">${p.content}</div>
-          <div style="margin-top:12px">${renderTags(p.tags)}</div>
-        `;
-        // images strip if attached
-        if(p.images && p.images.length){
-          const strip = document.createElement('div'); strip.className = 'image-strip';
-          p.images.forEach(src=>{ const i=document.createElement('img'); i.src=src; strip.appendChild(i); });
-          el.appendChild(strip);
+    bool check() {
+        for (char c : num) {
+            if (c != '0' && c != '1')
+                return false;
         }
-        if(isOwner){
-          const ctr = document.createElement('div'); ctr.className = 'post-controls';
-          const editBtn = document.createElement('button'); editBtn.textContent = 'Edit'; editBtn.onclick = ()=> openEditor(p.id);
-          const delBtn = document.createElement('button'); delBtn.textContent = 'Delete'; delBtn.onclick = ()=> { if(confirm('Delete this post?')){ posts = posts.filter(x=>x.id!==p.id); save(); renderPosts(searchInput.value); } };
-          ctr.appendChild(editBtn); ctr.appendChild(delBtn); el.appendChild(ctr);
+        return true;
+    }
+
+    void onesComplement() {
+        for (char &c : num) {
+            c = (c == '0') ? '1' : '0';
         }
-        feedEl.appendChild(el);
-      });
     }
 
-    function renderTags(tags){ if(!tags) return ''; return tags.split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join(''); }
-    function formatDate(iso){ try{ return new Date(iso).toLocaleString(); }catch(e){ return iso; } }
-    function escapeHtml(s){ return String(s||'').replace(/[&<>"]+/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]) }); }
-
-    // editor open/close
-    function openEditor(id=null){
-      editingId = id;
-      attachedImages = [];
-      attachedPreview.innerHTML = '';
-      if(id){
-        const p = posts.find(x=>x.id===id); if(!p) return;
-        titleIn.value = p.title; tagsIn.value = p.tags || ''; editor.innerHTML = p.content || '';
-        if(p.images && p.images.length){ p.images.forEach(src=> addAttachedPreview(src)); attachedImages = p.images.slice(); }
-      }else{ titleIn.value=''; tagsIn.value=''; editor.innerHTML=''; }
-      editorPanel.classList.remove('hidden'); newPostBtn.classList.add('hidden');
-      setTimeout(()=> editor.focus(), 50);
+    void display() {
+        cout << "Binary Number: " << num << endl;
     }
-    function closeEditor(){ editorPanel.classList.add('hidden'); newPostBtn.classList.toggle('hidden', !isOwner); editingId = null; attachedImages = []; attachedPreview.innerHTML=''; }
+};
 
-    // toolbar commands
-    function execCmd(cmd, val=null){
-      if(cmd === 'createLink'){
-        val = prompt('Enter destination URL (include https://):', 'https://');
-        if(!val) return;
-      }
-      if(cmd === 'formatBlock'){
-        document.execCommand(cmd, false, val);
-        return;
-      }
-      document.execCommand(cmd, false, val);
+int main() {
+    BINARY b;
+    b.read();
+    
+    if (!b.check()) {
+        cout << "Invalid Binary Number!";
+        return 0;
     }
 
-    // image insertion (inline)
-    addImgBtn.addEventListener('click', ()=> imgInput.click());
-    imgInput.addEventListener('change', e=>{
-      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ document.execCommand('insertImage', false, r.result); }; r.readAsDataURL(f);
-      imgInput.value = '';
-    });
+    cout << "Original ";
+    b.display();
 
-    // attach images (for gallery)
-    attachImgsBtn.addEventListener('click', ()=> attachInput.click());
-    attachInput.addEventListener('change', e=>{
-      const files = Array.from(e.target.files || []);
-      files.forEach(f=>{ const r=new FileReader(); r.onload=()=>{ attachedImages.push(r.result); addAttachedPreview(r.result); }; r.readAsDataURL(f); });
-      attachInput.value = '';
-    });
+    b.onesComplement();
 
-    function addAttachedPreview(dataUrl){
-      const img = document.createElement('img'); img.src = dataUrl; attachedPreview.appendChild(img);
-    }
+    cout << "1's Complement ";
+    b.display();
 
-    // drag & drop images into editor
-    editor.addEventListener('dragover', e=>{ e.preventDefault(); editor.style.opacity = 0.9; });
-    editor.addEventListener('dragleave', e=>{ editor.style.opacity = 1; });
-    editor.addEventListener('drop', e=>{
-      e.preventDefault(); editor.style.opacity = 1;
-      const f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if(f && f.type.startsWith('image/')){
-        const r = new FileReader(); r.onload = ()=>{ document.execCommand('insertImage', false, r.result); }; r.readAsDataURL(f);
-      }
-    });
+    return 0;
+}
+            </code></pre>
+        </div>
 
-    // save post
-    document.getElementById('saveBtn').addEventListener('click', ()=>{
-      const title = titleIn.value.trim() || 'Untitled';
-      const tags = tagsIn.value.trim();
-      const content = editor.innerHTML.trim();
-      if(!content && !confirm('Publish empty content?')) return;
-      if(editingId){
-        const p = posts.find(x=>x.id===editingId); if(!p) return;
-        p.title = title; p.tags = tags; p.content = content; p.images = attachedImages.slice(); p.editedAt = nowISO();
-      } else {
-        const newP = { id: uid(), title, tags, content, images: attachedImages.slice(), createdAt: nowISO(), author: 'Owner' };
-        posts.unshift(newP);
-      }
-      save(); renderPosts(searchInput.value); closeEditor();
-    });
+        <!-- ================= PROGRAM 2 ================= -->
+        <div id="p2" class="program" style="display:none;">
+            <h2>Program 2</h2>
 
-    document.getElementById('cancelBtn').addEventListener('click', ()=>{ if(confirm('Discard changes?')) closeEditor(); });
+            <div class="controls">
+                <button onclick="copyCode('code-2')">Copy</button>
+                <button onclick="downloadCode('code-2', 'program2.cpp')">Download</button>
+            </div>
 
-    // owner login
-    loginBtn.addEventListener('click', ()=>{
-      if(isOwner){ isOwner = false; updateOwnerUI(); alert('Logged out.'); return; }
-      const p = prompt('Enter owner password to unlock editing:');
-      if(p === OWNER_PASSWORD){ isOwner = true; updateOwnerUI(); alert('Owner mode unlocked.'); }
-      else alert('Incorrect password.');
-    });
+            <pre><code id="code-2">
+// PASTE PROGRAM 2 HERE
+            </code></pre>
+        </div>
 
-    function updateOwnerUI(){ ownerStatus.textContent = isOwner? 'Unlocked' : 'Locked'; newPostBtn.classList.toggle('hidden', !isOwner); renderPosts(searchInput.value); loginBtn.textContent = isOwner? 'Logout' : 'Owner login'; }
+        <!-- ================= Program 3–10 (empty) ================= -->
+        <div id="p3" class="program" style="display:none;"><h2>Program 3</h2><pre><code id="code-3">// PASTE PROGRAM 3 HERE</code></pre></div>
+        <div id="p4" class="program" style="display:none;"><h2>Program 4</h2><pre><code id="code-4">// PASTE PROGRAM 4 HERE</code></pre></div>
+        <div id="p5" class="program" style="display:none;"><h2>Program 5</h2><pre><code id="code-5">// PASTE PROGRAM 5 HERE</code></pre></div>
+        <div id="p6" class="program" style="display:none;"><h2>Program 6</h2><pre><code id="code-6">// PASTE PROGRAM 6 HERE</code></pre></div>
+        <div id="p7" class="program" style="display:none;"><h2>Program 7</h2><pre><code id="code-7">// PASTE PROGRAM 7 HERE</code></pre></div>
+        <div id="p8" class="program" style="display:none;"><h2>Program 8</h2><pre><code id="code-8">// PASTE PROGRAM 8 HERE</code></pre></div>
+        <div id="p9" class="program" style="display:none;"><h2>Program 9</h2><pre><code id="code-9">// PASTE PROGRAM 9 HERE</code></pre></div>
+        <div id="p10" class="program" style="display:none;"><h2>Program 10</h2><pre><code id="code-10">// PASTE PROGRAM 10 HERE</code></pre></div>
 
-    newPostBtn.addEventListener('click', ()=> openEditor(null));
+    </div>
+</div>
 
-    // search
-    searchInput.addEventListener('input', e=> renderPosts(e.target.value));
-
-    // export/import
-    exportBtn.addEventListener('click', ()=> downloadPosts());
-    exportJSONBtn.addEventListener('click', ()=> downloadPosts());
-    importJSONBtn.addEventListener('click', ()=> importFile.click());
-    importFile.addEventListener('change', e=>{
-      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{
-        try{
-          const data = JSON.parse(r.result);
-          if(!Array.isArray(data)) throw 'Invalid file';
-          if(confirm('Append imported posts? OK=append, Cancel=replace')){ posts = posts.concat(data.map(sanitize)); }
-          else { posts = data.map(sanitize); }
-          save(); renderPosts(searchInput.value);
-        }catch(err){ alert('Import failed: '+err); }
-      }; r.readAsText(f);
-      importFile.value = '';
-    });
-
-    function sanitize(o){ return { id: o.id||uid(), title: o.title||'Untitled', tags: o.tags||'', content: o.content||'', images: o.images||[], createdAt: o.createdAt||nowISO(), editedAt: o.editedAt||null, author: o.author||'Imported' }; }
-
-    function downloadPosts(){ const data = JSON.stringify(posts, null, 2); const blob = new Blob([data], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'private-blog-posts.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
-
-    // clear all
-    clearAllBtn.addEventListener('click', ()=>{ if(confirm('Clear ALL posts? This cannot be undone.')){ posts=[]; save(); renderPosts(); } });
-
-    // helper: seed sample
-    function seed(){ if(posts.length) return; posts = [{ id: uid(), title: 'Welcome to your Private Blog', tags: 'welcome,setup', content: '<p>This is a sample post. Unlock owner mode to add posts with images and rich formatting.</p>', images: [], createdAt: nowISO(), author: 'Owner' }]; save(); }
-
-    // init
-    (function init(){ load(); seed(); renderPosts(); })();
-
-  </script>
 </body>
 </html>
