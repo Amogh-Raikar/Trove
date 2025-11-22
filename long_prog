@@ -117,76 +117,78 @@
                 <button onclick="downloadCode('code1', 'program1.cpp')">Download</button>
             </div>
 
-            <pre><code id="code1"><![CDATA[
+            <pre><code id="code-1"><![CDATA[
 #include <iostream>
 using namespace std;
+
 class BINARY
 {
-	short list[30];
-	unsigned short N;
-	
-	void search()
-	{
-		int key;
-		cout<<"enter number to search:";
-		cin>>key;
-		
-		int low=0,high=N-1,mid,found=0,POS;
-		while(low<=high)
-		{
-			mid=(low+high)/2;
-			if(list[mid]==key)
-			{
-				found = 1;
-				POS = mid;
-				break;
-			}
-			else if(list[mid]<key)
-			{
-				low=mid+1;
-			}
-			else
-			{
-				high=mid-1;
-			}
-		}
-		if(found==1)
-		{
-			cout<<key<<"is present in the list at index:"<<mid;	
-		}
-		else
-		{
-			cout<<key<<"is not present in the list\n";
-		}	
-	}
-	public: 
-	BINARY()
-	{
-		cout<<"enter number of elements(max 30)";
-		cin>>N;
-		if(N>30)
-		{
-			cout<<"invalid input N must be <=30\n";
-			N=30;
-		}
-		cout<<"enter"<<N<<"sorted number:\n";
-		for(int i=0;i<N;i++)
-		{
-			cin>>list[i];
-		}
-		search();
-	}
-};
+    short list[30];
+    unsigned short N;
 
+    void search()
+    {
+        int key;
+        cout << "enter number to search:";
+        cin >> key;
+
+        int low = 0, high = N - 1, mid, found = 0, POS;
+        while (low <= high)
+        {
+            mid = (low + high) / 2;
+            if (list[mid] == key)
+            {
+                found = 1;
+                POS = mid;
+                break;
+            }
+            else if (list[mid] < key)
+            {
+                low = mid + 1;
+            }
+            else
+            {
+                high = mid - 1;
+            }
+        }
+        if (found == 1)
+        {
+            cout << key << " is present in the list at index: " << mid;
+        }
+        else
+        {
+            cout << key << " is not present in the list\n";
+        }
+    }
+
+public:
+    BINARY()
+    {
+        cout << "enter number of elements(max 30): ";
+        cin >> N;
+        if (N > 30)
+        {
+            cout << "invalid input N must be <=30\n";
+            N = 30;
+        }
+
+        cout << "enter " << N << " sorted numbers:\n";
+        for (int i = 0; i < N; i++)
+        {
+            cin >> list[i];
+        }
+
+        search();
+    }
+};
 
 int main()
 {
-	BINARY obj;
-	return 0;
-}
+    BINARY obj;
+    return 0;
 }
 ]]></code></pre>
-        </div>
+
 
         <!-- PROGRAM 2 -->
         <div id="p2" class="program" style="display:none;">
