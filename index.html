@@ -10,56 +10,43 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: #f5f5f5;
+            background: #f4f4f4;
         }
-
         header {
             background: #222;
+            padding: 17px;
             color: white;
-            padding: 15px;
             text-align: center;
             font-size: 24px;
         }
-
         .container {
             display: flex;
             height: 100vh;
         }
-
         .sidebar {
-            width: 250px;
+            width: 260px;
             background: #333;
             color: white;
             padding: 20px;
             overflow-y: auto;
         }
-
-        .sidebar h2 {
-            margin-top: 0;
-            text-align: center;
-        }
-
         .sidebar button {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
-            font-size: 16px;
-            cursor: pointer;
             background: #444;
-            border: none;
             color: white;
+            border: none;
+            cursor: pointer;
         }
-
         .sidebar button:hover {
             background: #555;
         }
-
         .content {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
         }
-
         pre {
             background: #1e1e1e;
             color: #00ff9c;
@@ -69,38 +56,31 @@
             word-wrap: break-word;
             font-size: 16px;
         }
-
-        .controls {
-            margin-bottom: 15px;
-        }
-
         .controls button {
-            margin-right: 10px;
             padding: 8px 12px;
-            cursor: pointer;
+            margin-right: 10px;
         }
     </style>
 
     <script>
         function showProgram(id) {
-            const programs = document.querySelectorAll(".program");
-            programs.forEach(p => p.style.display = "none");
-
+            document.querySelectorAll(".program")
+                .forEach(p => p.style.display = "none");
             document.getElementById(id).style.display = "block";
         }
 
-        function copyCode(codeId) {
-            const text = document.getElementById(codeId).innerText;
+        function copyCode(id) {
+            const text = document.getElementById(id).innerText;
             navigator.clipboard.writeText(text);
-            alert("Code copied!");
+            alert("Copied!");
         }
 
-        function downloadCode(codeId, fileName) {
-            const text = document.getElementById(codeId).innerText;
+        function downloadCode(id, filename) {
+            const text = document.getElementById(id).innerText;
             const blob = new Blob([text], { type: "text/plain" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = fileName;
+            link.download = filename;
             link.click();
         }
     </script>
@@ -108,14 +88,12 @@
 
 <body>
 
-<header>C++ PROGRAMS</header>
+<header>C++ PROGRAM LIST</header>
 
 <div class="container">
 
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h2>Programs</h2>
-
         <button onclick="showProgram('p1')">Program 1</button>
         <button onclick="showProgram('p2')">Program 2</button>
         <button onclick="showProgram('p3')">Program 3</button>
@@ -131,17 +109,16 @@
     <!-- MAIN CONTENT -->
     <div class="content">
 
-        <!-- ================= PROGRAM 1 ================= -->
+        <!-- PROGRAM 1 -->
         <div id="p1" class="program">
             <h2>Program 1</h2>
-
             <div class="controls">
-                <button onclick="copyCode('code-1')">Copy</button>
-                <button onclick="downloadCode('code-1', 'program1.cpp')">Download</button>
+                <button onclick="copyCode('code1')">Copy</button>
+                <button onclick="downloadCode('code1', 'program1.cpp')">Download</button>
             </div>
 
-            <pre><code id="code-1">
-    #include <iostream>
+            <pre><code id="code1"><![CDATA[
+#include <iostream>
 using namespace std;
 class BINARY
 {
@@ -207,32 +184,126 @@ int main()
 	BINARY obj;
 	return 0;
 }
-            </code></pre>
+}
+]]></code></pre>
         </div>
 
-        <!-- ================= PROGRAM 2 ================= -->
+        <!-- PROGRAM 2 -->
         <div id="p2" class="program" style="display:none;">
             <h2>Program 2</h2>
-
             <div class="controls">
-                <button onclick="copyCode('code-2')">Copy</button>
-                <button onclick="downloadCode('code-2', 'program2.cpp')">Download</button>
+                <button onclick="copyCode('code2')">Copy</button>
+                <button onclick="downloadCode('code2', 'program2.cpp')">Download</button>
             </div>
 
-            <pre><code id="code-2">
-// PASTE PROGRAM 2 HERE
-            </code></pre>
+            <pre><code id="code2"><![CDATA[
+// Paste Program 2 here
+]]></code></pre>
         </div>
 
-        <!-- ================= Program 3–10 (empty) ================= -->
-        <div id="p3" class="program" style="display:none;"><h2>Program 3</h2><pre><code id="code-3">// PASTE PROGRAM 3 HERE</code></pre></div>
-        <div id="p4" class="program" style="display:none;"><h2>Program 4</h2><pre><code id="code-4">// PASTE PROGRAM 4 HERE</code></pre></div>
-        <div id="p5" class="program" style="display:none;"><h2>Program 5</h2><pre><code id="code-5">// PASTE PROGRAM 5 HERE</code></pre></div>
-        <div id="p6" class="program" style="display:none;"><h2>Program 6</h2><pre><code id="code-6">// PASTE PROGRAM 6 HERE</code></pre></div>
-        <div id="p7" class="program" style="display:none;"><h2>Program 7</h2><pre><code id="code-7">// PASTE PROGRAM 7 HERE</code></pre></div>
-        <div id="p8" class="program" style="display:none;"><h2>Program 8</h2><pre><code id="code-8">// PASTE PROGRAM 8 HERE</code></pre></div>
-        <div id="p9" class="program" style="display:none;"><h2>Program 9</h2><pre><code id="code-9">// PASTE PROGRAM 9 HERE</code></pre></div>
-        <div id="p10" class="program" style="display:none;"><h2>Program 10</h2><pre><code id="code-10">// PASTE PROGRAM 10 HERE</code></pre></div>
+        <!-- PROGRAM 3 -->
+        <div id="p3" class="program" style="display:none;">
+            <h2>Program 3</h2>
+            <div class="controls">
+                <button onclick="copyCode('code3')">Copy</button>
+                <button onclick="downloadCode('code3', 'program3.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code3"><![CDATA[
+// Paste Program 3 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 4 -->
+        <div id="p4" class="program" style="display:none;">
+            <h2>Program 4</h2>
+            <div class="controls">
+                <button onclick="copyCode('code4')">Copy</button>
+                <button onclick="downloadCode('code4', 'program4.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code4"><![CDATA[
+// Paste Program 4 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 5 -->
+        <div id="p5" class="program" style="display:none;">
+            <h2>Program 5</h2>
+            <div class="controls">
+                <button onclick="copyCode('code5')">Copy</button>
+                <button onclick="downloadCode('code5', 'program5.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code5"><![CDATA[
+// Paste Program 5 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 6 -->
+        <div id="p6" class="program" style="display:none;">
+            <h2>Program 6</h2>
+            <div class="controls">
+                <button onclick="copyCode('code6')">Copy</button>
+                <button onclick="downloadCode('code6', 'program6.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code6"><![CDATA[
+// Paste Program 6 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 7 -->
+        <div id="p7" class="program" style="display:none;">
+            <h2>Program 7</h2>
+            <div class="controls">
+                <button onclick="copyCode('code7')">Copy</button>
+                <button onclick="downloadCode('code7', 'program7.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code7"><![CDATA[
+// Paste Program 7 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 8 -->
+        <div id="p8" class="program" style="display:none;">
+            <h2>Program 8</h2>
+            <div class="controls">
+                <button onclick="copyCode('code8')">Copy</button>
+                <button onclick="downloadCode('code8', 'program8.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code8"><![CDATA[
+// Paste Program 8 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 9 -->
+        <div id="p9" class="program" style="display:none;">
+            <h2>Program 9</h2>
+            <div class="controls">
+                <button onclick="copyCode('code9')">Copy</button>
+                <button onclick="downloadCode('code9', 'program9.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code9"><![CDATA[
+// Paste Program 9 here
+]]></code></pre>
+        </div>
+
+        <!-- PROGRAM 10 -->
+        <div id="p10" class="program" style="display:none;">
+            <h2>Program 10</h2>
+            <div class="controls">
+                <button onclick="copyCode('code10')">Copy</button>
+                <button onclick="downloadCode('code10', 'program10.cpp')">Download</button>
+            </div>
+
+            <pre><code id="code10"><![CDATA[
+// Paste Program 10 here
+]]></code></pre>
+        </div>
 
     </div>
 </div>
